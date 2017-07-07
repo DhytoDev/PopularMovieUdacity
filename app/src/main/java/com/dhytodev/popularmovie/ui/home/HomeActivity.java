@@ -1,7 +1,9 @@
-package com.dhytodev.popularmovie;
+package com.dhytodev.popularmovie.ui.home;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.dhytodev.popularmovie.R;
 
 public class HomeActivity extends AppCompatActivity {
 

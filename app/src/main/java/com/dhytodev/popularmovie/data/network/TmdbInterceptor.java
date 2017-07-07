@@ -1,4 +1,4 @@
-package com.dhytodev.popularmovie.network;
+package com.dhytodev.popularmovie.data.network;
 
 import com.dhytodev.popularmovie.BuildConfig;
 

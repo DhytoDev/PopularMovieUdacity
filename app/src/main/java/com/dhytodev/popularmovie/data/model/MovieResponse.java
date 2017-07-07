@@ -1,4 +1,4 @@
-package com.dhytodev.popularmovie.model;
+package com.dhytodev.popularmovie.data.model;
 
 import java.util.List;
 
@@ -7,5 +7,5 @@ import java.util.List;
  */
 
 public class MovieResponse {
-    public List<Movie> results;
+    public List<Movie> listMovies ;
 }

@@ -1,7 +1,7 @@
-package com.dhytodev.popularmovie.network;
+package com.dhytodev.popularmovie.data.network;
 
 import com.dhytodev.popularmovie.BuildConfig;
-import com.dhytodev.popularmovie.model.MovieResponse;
+import com.dhytodev.popularmovie.data.model.MovieResponse;
 
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
@@ -18,10 +18,10 @@ import retrofit2.http.GET;
 public interface TmdbServices {
 
     @GET("movie/popular")
-    Observable<MovieResponse> getPopularMovie();
+    Observable<MovieResponse> getPopularMovies();
 
     @GET("movie/top_rated")
-    Observable<MovieResponse> getTopRatedMovie();
+    Observable<MovieResponse> getTopRatedMovies();
 
     class ServiceGenerator {
         public static TmdbServices instance() {

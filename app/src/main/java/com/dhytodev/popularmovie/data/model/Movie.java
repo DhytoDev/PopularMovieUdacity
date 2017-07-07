@@ -1,4 +1,4 @@
-package com.dhytodev.popularmovie.model;
+package com.dhytodev.popularmovie.data.model;
 
 import org.parceler.Parcel;
 
