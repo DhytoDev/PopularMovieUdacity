@@ -7,5 +7,5 @@ import java.util.List;
  */
 
 public class MovieResponse {
-    public List<Movie> listMovies ;
+    public List<Movie> results ;
 }

@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/fragment_listing"
-        android:name="com.dhytodev.popularmovie.ui.home.HomeActivity"
+        android:name="com.dhytodev.popularmovie.ui.home.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_movies"/>

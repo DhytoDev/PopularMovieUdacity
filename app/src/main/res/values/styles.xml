@@ -40,6 +40,4 @@
     <style name="ExpandedToolbar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">@android:color/transparent</item>
     </style>
-
-    <string name="movie_details">Movie Details</string>
 </resources>
