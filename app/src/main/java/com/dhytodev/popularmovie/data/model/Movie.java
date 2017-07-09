@@ -1,6 +1,6 @@
 package com.dhytodev.popularmovie.data.model;
 
-import org.parceler.Parcel;
+import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,8 +10,7 @@ import java.util.Locale;
  * Created by izadalab on 7/8/17.
  */
 
-@Parcel(Parcel.Serialization.BEAN)
-public class Movie {
+public class Movie implements Parcelable {
     private int id;
     private String title;
     private float popularity;
@@ -21,6 +20,29 @@ public class Movie {
     private Date release_date;
     private int vote_count;
     private float vote_average;
+
+    protected Movie(android.os.Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        popularity = in.readFloat();
+        poster_path = in.readString();
+        backdrop_path = in.readString();
+        overview = in.readString();
+        vote_count = in.readInt();
+        vote_average = in.readFloat();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(android.os.Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getFormattedDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyy", Locale.getDefault());
@@ -97,5 +119,22 @@ public class Movie {
 
     public void setVote_average(float vote_average) {
         this.vote_average = vote_average;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeFloat(popularity);
+        dest.writeString(poster_path);
+        dest.writeString(backdrop_path);
+        dest.writeString(overview);
+        dest.writeInt(vote_count);
+        dest.writeFloat(vote_average);
     }
 }

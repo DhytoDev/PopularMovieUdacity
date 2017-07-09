@@ -16,6 +16,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.dhytodev.popularmovie.R;
 import com.dhytodev.popularmovie.data.model.Movie;
+import com.dhytodev.popularmovie.ui.Constants;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MovieViewHolde
         holder.itemView.setOnClickListener(holder);
         holder.movie = movies.get(position);
         holder.title.setText(holder.movie.getTitle());
-        Glide.with(context).load("http://image.tmdb.org/t/p/w342/" + holder.movie
+        Glide.with(context).load(Constants.API_POSTER_PATH + holder.movie
                 .getPoster_path()).asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(new BitmapImageViewTarget(holder.poster) {
