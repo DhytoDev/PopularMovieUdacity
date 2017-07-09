@@ -83,7 +83,7 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
-    public void showDetails(Movie movie) {
+    private void showDetails(Movie movie) {
         Glide.with(getContext()).load(Constants.API_BACKDROP_PATH + movie.getBackdrop_path()).into(poster);
         title.setText(movie.getTitle());
         releaseDate.setText(String.format(getString(R.string.release_date), movie.getRelease_date()));
@@ -106,7 +106,7 @@ public class MovieDetailFragment extends Fragment {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
         } else {
-            // Don't inflate. Tablet is in landscape mode.
+
         }
     }
 
