@@ -31,13 +31,15 @@ import butterknife.ButterKnife;
  */
 public class MovieDetailFragment extends Fragment {
 
-    @BindView(R.id.movie_poster)
-    ImageView poster;
+    @BindView(R.id.movie_backdrop)
+    ImageView backdrop;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.movie_name)
+    @BindView(R.id.movie_poster)
+    ImageView poster ;
+    @BindView(R.id.movie_title)
     TextView title;
-    @BindView(R.id.movie_year)
+    @BindView(R.id.movie_release_date)
     TextView releaseDate;
     @BindView(R.id.movie_rating)
     TextView rating;
@@ -84,7 +86,8 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void showDetails(Movie movie) {
-        Glide.with(getContext()).load(Constants.API_BACKDROP_PATH + movie.getBackdrop_path()).into(poster);
+        Glide.with(getContext()).load(Constants.API_BACKDROP_PATH + movie.getBackdrop_path()).into(backdrop);
+        Glide.with(getContext()).load(Constants.API_POSTER_PATH + movie.getPoster_path()).into(poster);
         title.setText(movie.getTitle());
         releaseDate.setText(String.format(getString(R.string.release_date), movie.getRelease_date()));
         rating.setText(String.format(getString(R.string.rating), String.valueOf(movie.getVote_average())));
