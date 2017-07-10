@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -161,19 +162,31 @@ public class HomeFragment extends Fragment implements HomeView, SwipeRefreshLayo
     private void initRecyclerView() {
         listMovies.setHasFixedSize(true);
 
-        int columns;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            columns = 2;
-        } else {
-            columns = getResources().getInteger(R.integer.no_of_columns);
-        }
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns());
         listMovies.setLayoutManager(layoutManager);
 
         adapter = new HomeAdapter(movies, this);
         listMovies.setAdapter(adapter);
 
         refresh.setOnRefreshListener(this);
+    }
+
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // You can change this divider to adjust the size of the poster
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+
+        if (nColumns < 2) return 2;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return 2 ;
+        } else {
+            return nColumns;
+        }
+
     }
 
     @Override
