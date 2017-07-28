@@ -8,4 +8,6 @@
 
     <string name="release_date">Release Date: %s</string>
     <string name="rating">Rating : %s/10</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
 </resources>

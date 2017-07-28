@@ -1,7 +1,9 @@
 package com.dhytodev.popularmovie.data.network;
 
 import com.dhytodev.popularmovie.BuildConfig;
-import com.dhytodev.popularmovie.data.model.MovieResponse;
+import com.dhytodev.popularmovie.data.model.response.MoviesResponse;
+import com.dhytodev.popularmovie.data.model.response.ReviewsResponse;
+import com.dhytodev.popularmovie.data.model.response.TrailersResponse;
 
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
@@ -10,6 +12,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by izadalab on 7/8/17.
@@ -18,10 +22,16 @@ import retrofit2.http.GET;
 public interface TmdbServices {
 
     @GET("movie/popular")
-    Observable<MovieResponse> getPopularMovies();
+    Observable<MoviesResponse> getPopularMovies();
 
     @GET("movie/top_rated")
-    Observable<MovieResponse> getTopRatedMovies();
+    Observable<MoviesResponse> getTopRatedMovies();
+
+    @GET("movie/{id}/videos")
+    Observable<TrailersResponse> getMovieTrailers(@Path("id") int movieId);
+
+    @GET("movie/{id}/reviews")
+    Observable<ReviewsResponse> getMovieReviews(@Path("id") int movieId, @Query("page") int page);
 
     class ServiceGenerator {
         public static TmdbServices instance() {

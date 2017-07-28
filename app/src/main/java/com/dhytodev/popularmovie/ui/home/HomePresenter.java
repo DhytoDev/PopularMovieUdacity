@@ -46,7 +46,7 @@ public class HomePresenter extends BasePresenter {
                     mView.showLoading(false);
                     if (movies != null && movies.size() > 0) {
                         mView.fetchMovies(movies);
-                        Log.e("movies", movies.get(0).getPoster_path());
+                        Log.e("movies", movies.get(0).getPosterPath());
                     }
                 }, throwable -> {
                     mView.showLoading(false);

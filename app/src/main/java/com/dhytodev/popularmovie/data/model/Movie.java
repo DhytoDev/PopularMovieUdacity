@@ -3,44 +3,32 @@ package com.dhytodev.popularmovie.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by izadalab on 7/8/17.
  */
 
 public class Movie implements Parcelable {
+    @SerializedName("id")
     private int id;
+    @SerializedName("title")
     private String title;
+    @SerializedName("popularity")
     private float popularity;
-    private String poster_path;
-    private String backdrop_path;
+    @SerializedName("poster_path")
+    private String posterPath;
+    @SerializedName("backdrop_path")
+    private String backdropPath;
+    @SerializedName("overview")
     private String overview;
-    private String release_date;
-    private int vote_count;
-    private float vote_average;
+    @SerializedName("release_date")
+    private String releaseDate;
+    @SerializedName("vote_count")
+    private int voteCount;
+    @SerializedName("vote_average")
+    private float voteAverage;
 
-    protected Movie(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        popularity = in.readFloat();
-        poster_path = in.readString();
-        backdrop_path = in.readString();
-        overview = in.readString();
-        release_date = in.readString();
-        vote_count = in.readInt();
-        vote_average = in.readFloat();
-    }
-
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 
     public int getId() {
         return id;
@@ -66,20 +54,20 @@ public class Movie implements Parcelable {
         this.popularity = popularity;
     }
 
-    public String getPoster_path() {
-        return poster_path;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public void setPoster_path(String poster_path) {
-        this.poster_path = poster_path;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
-    public String getBackdrop_path() {
-        return backdrop_path;
+    public String getBackdropPath() {
+        return backdropPath;
     }
 
-    public void setBackdrop_path(String backdrop_path) {
-        this.backdrop_path = backdrop_path;
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     public String getOverview() {
@@ -90,28 +78,28 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
-    public String getRelease_date() {
-        return release_date;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setRelease_date(String release_date) {
-        this.release_date = release_date;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
-    public int getVote_count() {
-        return vote_count;
+    public int getVoteCount() {
+        return voteCount;
     }
 
-    public void setVote_count(int vote_count) {
-        this.vote_count = vote_count;
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
     }
 
-    public float getVote_average() {
-        return vote_average;
+    public float getVoteAverage() {
+        return voteAverage;
     }
 
-    public void setVote_average(float vote_average) {
-        this.vote_average = vote_average;
+    public void setVoteAverage(float voteAverage) {
+        this.voteAverage = voteAverage;
     }
 
     @Override
@@ -121,14 +109,41 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(title);
-        dest.writeFloat(popularity);
-        dest.writeString(poster_path);
-        dest.writeString(backdrop_path);
-        dest.writeString(overview);
-        dest.writeString(release_date);
-        dest.writeInt(vote_count);
-        dest.writeFloat(vote_average);
+        dest.writeInt(this.id);
+        dest.writeString(this.title);
+        dest.writeFloat(this.popularity);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.backdropPath);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeInt(this.voteCount);
+        dest.writeFloat(this.voteAverage);
     }
+
+    public Movie() {
+    }
+
+    protected Movie(Parcel in) {
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.popularity = in.readFloat();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.voteCount = in.readInt();
+        this.voteAverage = in.readFloat();
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

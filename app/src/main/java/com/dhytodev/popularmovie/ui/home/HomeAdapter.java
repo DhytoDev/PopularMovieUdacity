@@ -52,7 +52,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MovieViewHolde
         holder.movie = movies.get(position);
         holder.title.setText(holder.movie.getTitle());
         Glide.with(context).load(Constants.API_POSTER_PATH + holder.movie
-                .getPoster_path()).asBitmap()
+                .getPosterPath()).asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(new BitmapImageViewTarget(holder.poster) {
                     @Override

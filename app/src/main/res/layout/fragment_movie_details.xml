@@ -100,8 +100,6 @@
                         android:fontFamily="sans-serif-light"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@android:color/white" />
-
-
                 </LinearLayout>
             </LinearLayout>
 
@@ -124,6 +122,12 @@
                 android:lineSpacingMultiplier="1.2"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@android:color/white"/>
+
+            <include
+                layout="@layout/trailers_and_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -1,6 +1,8 @@
 package com.dhytodev.popularmovie.ui.detail;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,17 +12,30 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dhytodev.popularmovie.R;
 import com.dhytodev.popularmovie.data.model.Movie;
+import com.dhytodev.popularmovie.data.model.Review;
+import com.dhytodev.popularmovie.data.model.Trailer;
+import com.dhytodev.popularmovie.data.network.TmdbServices;
+import com.dhytodev.popularmovie.data.repository.MovieInteractor;
+import com.dhytodev.popularmovie.data.repository.MovieInteractorImpl;
 import com.dhytodev.popularmovie.ui.Constants;
+import com.squareup.picasso.Picasso;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +44,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements MovieDetailView, View.OnClickListener {
 
     @BindView(R.id.movie_backdrop)
     ImageView backdrop;
@@ -45,10 +60,31 @@ public class MovieDetailFragment extends Fragment {
     TextView rating;
     @BindView(R.id.movie_description)
     TextView overview;
+    @BindView(R.id.trailers_label)
+    TextView trailersLabel;
+    @BindView(R.id.trailers)
+    LinearLayout trailers;
+    @BindView(R.id.trailers_container)
+    HorizontalScrollView trailersContainer ;
+    @BindView(R.id.reviews_label)
+    TextView reviewsLabel;
+    @BindView(R.id.reviews)
+    LinearLayout reviewsContainer;
     @Nullable @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    private static final String TAG = MovieDetailFragment.class.getSimpleName() ;
+
+    private TmdbServices services ;
+    private MovieInteractor movieInteractor ;
+    private MovieDetailPresenter presenter ;
+
     private Movie movie ;
+
+    private List<Trailer> trailerList = new ArrayList<>();
+    private List<Review> reviewList = new ArrayList<>() ;
+
+    private String key = null ;
 
 
     public MovieDetailFragment() {
@@ -70,6 +106,11 @@ public class MovieDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
         ButterKnife.bind(this, rootView);
         setToolbar();
+
+        services = TmdbServices.ServiceGenerator.instance();
+        movieInteractor = new MovieInteractorImpl(services);
+        presenter = new MovieDetailPresenter(movieInteractor, this);
+
         return rootView;
     }
 
@@ -81,16 +122,18 @@ public class MovieDetailFragment extends Fragment {
             if (movie != null) {
                 this.movie = movie;
                 showDetails(movie);
+
+                presenter.getMovieTrailersAndReviews(movie.getId());
             }
         }
     }
 
     private void showDetails(Movie movie) {
-        Glide.with(getContext()).load(Constants.API_BACKDROP_PATH + movie.getBackdrop_path()).into(backdrop);
-        Glide.with(getContext()).load(Constants.API_POSTER_PATH + movie.getPoster_path()).into(poster);
+        Glide.with(getContext()).load(Constants.API_BACKDROP_PATH + movie.getBackdropPath()).into(backdrop);
+        Glide.with(getContext()).load(Constants.API_POSTER_PATH + movie.getPosterPath()).into(poster);
         title.setText(movie.getTitle());
-        releaseDate.setText(String.format(getString(R.string.release_date), movie.getRelease_date()));
-        rating.setText(String.format(getString(R.string.rating), String.valueOf(movie.getVote_average())));
+        releaseDate.setText(String.format(getString(R.string.release_date), movie.getReleaseDate()));
+        rating.setText(String.format(getString(R.string.rating), String.valueOf(movie.getVoteAverage())));
         overview.setText(movie.getOverview());
     }
 
@@ -113,4 +156,86 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public void fetchTrailers(List<Trailer> trailers) {
+        if (trailers.isEmpty()) {
+            this.trailers.setVisibility(View.GONE);
+            trailersLabel.setVisibility(View.GONE);
+            trailersContainer.setVisibility(View.GONE);
+        } else {
+            this.trailers.setVisibility(View.VISIBLE);
+            trailersLabel.setVisibility(View.VISIBLE);
+            trailersContainer.setVisibility(View.VISIBLE);
+
+            this.trailers.removeAllViews();
+
+            for(Trailer trailer : trailers) {
+                View thumbContainer = LayoutInflater.from(getContext()).inflate(R.layout.video, this.trailers, false);
+                ImageView thumbView = ButterKnife.findById(thumbContainer, R.id.video_thumb);
+                thumbView.setTag(trailer.getKey());
+                thumbView.requestLayout();
+                thumbView.setOnClickListener(this);
+                Picasso.with(getContext())
+                        .load(trailer.getImageVideoUrl())
+                        .centerCrop()
+                        .placeholder(R.color.colorPrimary)
+                        .resizeDimen(R.dimen.video_width, R.dimen.video_height)
+                        .into(thumbView);
+                this.trailers.addView(thumbContainer);
+            }
+        }
+    }
+
+    @Override
+    public void fetchReviews(List<Review> reviews) {
+        if (reviews.isEmpty()) {
+            reviewsLabel.setVisibility(View.GONE);
+            reviewsContainer.setVisibility(View.GONE);
+        } else {
+            reviewsLabel.setVisibility(View.VISIBLE);
+            reviewsContainer.setVisibility(View.VISIBLE);
+
+            reviewsContainer.removeAllViews();
+
+            for (Review review : reviews) {
+                View reviewContainer = LayoutInflater.from(getContext()).inflate(R.layout.review, reviewsContainer, false);
+                TextView reviewAuthor = ButterKnife.findById(reviewContainer, R.id.review_author);
+                TextView reviewContent = ButterKnife.findById(reviewContainer, R.id.review_content);
+                reviewAuthor.setText(review.getAuthor());
+                reviewContent.setText(review.getContent());
+                reviewContent.setOnClickListener(this);
+                reviewsContainer.addView(reviewContainer);
+            }
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.video_thumb:
+                onThumbnailClick(v);
+                break;
+            case R.id.review_content:
+                onReviewClick((TextView) v);
+                break;
+        }
+    }
+
+    private void onThumbnailClick(View view) {
+        String key = view.getTag().toString();
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + key)));
+    }
+
+    private void onReviewClick(TextView view) {
+        if (view.getMaxLines() == 5)
+            view.setMaxLines(500);
+        else
+            view.setMaxLines(5);
+
+    }
 }
