@@ -54,6 +54,14 @@ public class HomePresenter extends BasePresenter {
                 }));
     }
 
+    public void getFavoriteMovie() {
+        compositeDisposable.add(movieInteractor.fetchFavoriteMovies()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(movies -> mView.fetchMovies(movies),
+                        throwable -> mView.showError(throwable.getLocalizedMessage())));
+    }
+
     @Override
     protected void attachView() {
         super.attachView();

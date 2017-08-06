@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements HomeView, SwipeRefreshLayo
 
         services = TmdbServices.ServiceGenerator.instance();
 
-        movieInteractor = new MovieInteractorImpl(services);
+        movieInteractor = new MovieInteractorImpl(services, getContext().getContentResolver());
 
         presenter = new HomePresenter(movieInteractor, this);
     }
@@ -120,6 +120,9 @@ public class HomeFragment extends Fragment implements HomeView, SwipeRefreshLayo
             case R.id.menu_sort_by_toprated:
                 selectedSort = TOP_RATED ;
                 presenter.fetchMovies(TOP_RATED);
+                break;
+            case R.id.menu_sort_by_favorited:
+                presenter.getFavoriteMovie();
                 break;
         }
         return super.onOptionsItemSelected(item);

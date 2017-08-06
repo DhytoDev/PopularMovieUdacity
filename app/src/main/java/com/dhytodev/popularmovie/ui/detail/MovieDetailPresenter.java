@@ -1,7 +1,9 @@
 package com.dhytodev.popularmovie.ui.detail;
 
+import android.util.Log;
 import android.util.Pair;
 
+import com.dhytodev.popularmovie.data.model.Movie;
 import com.dhytodev.popularmovie.data.repository.MovieInteractor;
 import com.dhytodev.popularmovie.ui.BasePresenter;
 
@@ -35,6 +37,34 @@ public class MovieDetailPresenter extends BasePresenter {
                     mView.fetchReviews(trailersreviewsPair.second);
                 }, throwable -> {
                     mView.showError(throwable.getLocalizedMessage());
+                }));
+    }
+
+    public void saveMovieToFavorite(Movie movie) {
+        compositeDisposable.add(movieInteractor.saveMovie(movie)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> mView.saveToFavorited(),
+                        throwable -> mView.showError(throwable.getLocalizedMessage())));
+    }
+
+    public void isMovieFavorited(Movie movie) {
+        compositeDisposable.add(movieInteractor.getMovie(movie)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> mView.isMovieFavorited(), error -> {
+                    Log.e(TAG, "isMovieFavorited: " + error.getLocalizedMessage());
+                }));
+    }
+
+    public void deleteFavorite(Movie movie) {
+        compositeDisposable.add(movieInteractor.deleteMovie(movie)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Log.d(TAG, "deleteFavorite: success");
+                }, throwable -> {
+                    Log.e(TAG, "deleteFavorite: error");
                 }));
     }
 

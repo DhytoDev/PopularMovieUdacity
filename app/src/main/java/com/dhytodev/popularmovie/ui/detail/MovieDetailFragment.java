@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -20,6 +21,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,6 +41,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -70,6 +73,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
     TextView reviewsLabel;
     @BindView(R.id.reviews)
     LinearLayout reviewsContainer;
+    @BindView(R.id.favorite)
+    FloatingActionButton buttonFavorite ;
     @Nullable @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -84,7 +89,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
     private List<Trailer> trailerList = new ArrayList<>();
     private List<Review> reviewList = new ArrayList<>() ;
 
-    private String key = null ;
+    private boolean isFavorited = false ;
 
 
     public MovieDetailFragment() {
@@ -108,7 +113,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
         setToolbar();
 
         services = TmdbServices.ServiceGenerator.instance();
-        movieInteractor = new MovieInteractorImpl(services);
+        movieInteractor = new MovieInteractorImpl(services, getContext().getContentResolver());
         presenter = new MovieDetailPresenter(movieInteractor, this);
 
         return rootView;
@@ -124,6 +129,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
                 showDetails(movie);
 
                 presenter.getMovieTrailersAndReviews(movie.getId());
+                presenter.isMovieFavorited(movie);
             }
         }
     }
@@ -211,7 +217,19 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
 
     @Override
     public void showError(String message) {
+        //Toast.makeText(getContext(), "Err :" + message, Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void saveToFavorited() {
+        isFavorited = true ;
+        buttonFavorite.setImageResource(R.drawable.ic_favorite_white_24dp);
+    }
+
+    @Override
+    public void isMovieFavorited() {
+        isFavorited = true ;
+        buttonFavorite.setImageResource(R.drawable.ic_favorite_white_24dp);
     }
 
     @Override
@@ -223,6 +241,16 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
             case R.id.review_content:
                 onReviewClick((TextView) v);
                 break;
+        }
+    }
+
+    @OnClick(R.id.favorite)
+    void onFabClick(){
+        if (isFavorited) {
+            presenter.deleteFavorite(movie);
+            buttonFavorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+        } else  {
+            presenter.saveMovieToFavorite(movie);
         }
     }
 

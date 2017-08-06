@@ -14,4 +14,6 @@ public interface MovieDetailView {
     void fetchTrailers(List<Trailer> trailers);
     void fetchReviews(List<Review> reviews);
     void showError(String message);
+    void saveToFavorited();
+    void isMovieFavorited() ;
 }
