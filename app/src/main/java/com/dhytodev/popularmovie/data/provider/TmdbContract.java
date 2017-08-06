@@ -25,11 +25,6 @@ public class TmdbContract {
         public static final String COLUMN_MOVIE_POSTER_PATH = "moviePosterPath";
         public static final String COLUMN_MOVIE_BACKDROP_PATH = "movieBackdropPath";
 
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.popularmovies.movie";
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.popularmovies.movie";
-
-        public static final String DEFAULT_SORT = BaseColumns._ID + " DESC";
-
         static Uri buildMovieUri(String movieId) {
             return CONTENT_URI.buildUpon().appendPath(movieId).build();
         }

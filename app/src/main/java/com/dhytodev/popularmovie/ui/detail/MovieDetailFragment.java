@@ -86,9 +86,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
 
     private Movie movie ;
 
-    private List<Trailer> trailerList = new ArrayList<>();
-    private List<Review> reviewList = new ArrayList<>() ;
-
     private boolean isFavorited = false ;
 
 
