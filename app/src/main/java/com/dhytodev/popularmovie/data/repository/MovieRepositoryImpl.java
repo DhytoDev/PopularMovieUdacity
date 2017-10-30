@@ -33,9 +33,9 @@ import static com.dhytodev.popularmovie.data.provider.TmdbContract.MovieEntry.CO
  * Created by izadalab on 7/8/17.
  */
 
-public class MovieInteractorImpl implements MovieInteractor {
+public class MovieRepositoryImpl implements MovieRepository {
 
-    private static final String TAG = MovieInteractorImpl.class.getSimpleName() ;
+    private static final String TAG = MovieRepositoryImpl.class.getSimpleName() ;
     private TmdbServices services ;
     private ContentResolver contentResolver ;
 
@@ -51,7 +51,7 @@ public class MovieInteractorImpl implements MovieInteractor {
             TmdbContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH,
     };
 
-    public MovieInteractorImpl(TmdbServices services, ContentResolver contentResolver) {
+    public MovieRepositoryImpl(TmdbServices services, ContentResolver contentResolver) {
         this.services = services;
         this.contentResolver = contentResolver ;
     }

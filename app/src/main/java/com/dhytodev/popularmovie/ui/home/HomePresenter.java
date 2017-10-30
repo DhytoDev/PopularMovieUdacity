@@ -3,7 +3,7 @@ package com.dhytodev.popularmovie.ui.home;
 import android.util.Log;
 
 import com.dhytodev.popularmovie.data.model.Movie;
-import com.dhytodev.popularmovie.data.repository.MovieInteractor;
+import com.dhytodev.popularmovie.data.repository.MovieRepository;
 import com.dhytodev.popularmovie.ui.BasePresenter;
 
 import java.util.List;
@@ -19,12 +19,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class HomePresenter extends BasePresenter {
 
-    private MovieInteractor movieInteractor ;
+    private MovieRepository movieRepository;
     private HomeView mView ;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public HomePresenter(MovieInteractor movieInteractor, HomeView mView) {
-        this.movieInteractor = movieInteractor;
+    public HomePresenter(MovieRepository movieRepository, HomeView mView) {
+        this.movieRepository = movieRepository;
         this.mView = mView;
     }
 
@@ -34,9 +34,9 @@ public class HomePresenter extends BasePresenter {
         Observable<List<Movie>> observableMovies;
 
         if (sort == HomeFragment.POPULAR) {
-            observableMovies = movieInteractor.fetchPopularMovies();
+            observableMovies = movieRepository.fetchPopularMovies();
         } else {
-            observableMovies = movieInteractor.fetchTopRatedMovies();
+            observableMovies = movieRepository.fetchTopRatedMovies();
         }
 
         compositeDisposable.add(observableMovies.
@@ -55,7 +55,7 @@ public class HomePresenter extends BasePresenter {
     }
 
     public void getFavoriteMovie() {
-        compositeDisposable.add(movieInteractor.fetchFavoriteMovies()
+        compositeDisposable.add(movieRepository.fetchFavoriteMovies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(movies -> mView.fetchMovies(movies),

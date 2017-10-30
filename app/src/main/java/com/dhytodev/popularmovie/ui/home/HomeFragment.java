@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +22,8 @@ import android.widget.Toast;
 import com.dhytodev.popularmovie.R;
 import com.dhytodev.popularmovie.data.model.Movie;
 import com.dhytodev.popularmovie.data.network.TmdbServices;
-import com.dhytodev.popularmovie.data.repository.MovieInteractor;
-import com.dhytodev.popularmovie.data.repository.MovieInteractorImpl;
+import com.dhytodev.popularmovie.data.repository.MovieRepository;
+import com.dhytodev.popularmovie.data.repository.MovieRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class HomeFragment extends Fragment implements HomeView, SwipeRefreshLayo
     public static final int TOP_RATED = 1;
 
     private TmdbServices services ;
-    private MovieInteractor movieInteractor ;
+    private MovieRepository movieRepository;
     private HomePresenter presenter ;
     private HomeAdapter adapter ;
     private List<Movie> movies = new ArrayList<>() ;
@@ -76,9 +77,9 @@ public class HomeFragment extends Fragment implements HomeView, SwipeRefreshLayo
 
         services = TmdbServices.ServiceGenerator.instance();
 
-        movieInteractor = new MovieInteractorImpl(services, getContext().getContentResolver());
+        movieRepository = new MovieRepositoryImpl(services, getContext().getContentResolver());
 
-        presenter = new HomePresenter(movieInteractor, this);
+        presenter = new HomePresenter(movieRepository, this);
     }
 
     @Override
@@ -178,9 +179,11 @@ public class HomeFragment extends Fragment implements HomeView, SwipeRefreshLayo
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         // You can change this divider to adjust the size of the poster
-        int widthDivider = 400;
+        int widthDivider = 500;
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
+
+        Log.d("columns", String.valueOf(nColumns));
 
         if (nColumns < 2) return 2;
 

@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,22 +20,19 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dhytodev.popularmovie.R;
 import com.dhytodev.popularmovie.data.model.Movie;
 import com.dhytodev.popularmovie.data.model.Review;
 import com.dhytodev.popularmovie.data.model.Trailer;
 import com.dhytodev.popularmovie.data.network.TmdbServices;
-import com.dhytodev.popularmovie.data.repository.MovieInteractor;
-import com.dhytodev.popularmovie.data.repository.MovieInteractorImpl;
+import com.dhytodev.popularmovie.data.repository.MovieRepository;
+import com.dhytodev.popularmovie.data.repository.MovieRepositoryImpl;
 import com.dhytodev.popularmovie.ui.Constants;
 import com.squareup.picasso.Picasso;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -81,7 +77,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
     private static final String TAG = MovieDetailFragment.class.getSimpleName() ;
 
     private TmdbServices services ;
-    private MovieInteractor movieInteractor ;
+    private MovieRepository movieRepository;
     private MovieDetailPresenter presenter ;
 
     private Movie movie ;
@@ -110,8 +106,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
         setToolbar();
 
         services = TmdbServices.ServiceGenerator.instance();
-        movieInteractor = new MovieInteractorImpl(services, getContext().getContentResolver());
-        presenter = new MovieDetailPresenter(movieInteractor, this);
+        movieRepository = new MovieRepositoryImpl(services, getContext().getContentResolver());
+        presenter = new MovieDetailPresenter(movieRepository, this);
 
         return rootView;
     }
@@ -132,8 +128,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailView, Vi
     }
 
     private void showDetails(Movie movie) {
-        Glide.with(getContext()).load(Constants.API_BACKDROP_PATH + movie.getBackdropPath()).into(backdrop);
-        Glide.with(getContext()).load(Constants.API_POSTER_PATH + movie.getPosterPath()).into(poster);
+        Glide.with(this).load(Constants.API_BACKDROP_PATH + movie.getBackdropPath()).into(backdrop);
+        Glide.with(this).load(Constants.API_POSTER_PATH + movie.getPosterPath()).into(poster);
         title.setText(movie.getTitle());
         releaseDate.setText(String.format(getString(R.string.release_date), movie.getReleaseDate()));
         rating.setText(String.format(getString(R.string.rating), String.valueOf(movie.getVoteAverage())));

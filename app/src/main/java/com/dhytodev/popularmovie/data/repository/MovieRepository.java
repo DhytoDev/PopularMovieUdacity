@@ -14,7 +14,7 @@ import io.reactivex.Single;
  * Created by izadalab on 7/8/17.
  */
 
-public interface MovieInteractor {
+public interface MovieRepository {
     Observable<List<Movie>> fetchPopularMovies();
 
     Observable<List<Movie>> fetchTopRatedMovies();

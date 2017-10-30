@@ -4,7 +4,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.dhytodev.popularmovie.data.model.Movie;
-import com.dhytodev.popularmovie.data.repository.MovieInteractor;
+import com.dhytodev.popularmovie.data.repository.MovieRepository;
 import com.dhytodev.popularmovie.ui.BasePresenter;
 
 import io.reactivex.Observable;
@@ -18,17 +18,17 @@ import io.reactivex.schedulers.Schedulers;
 public class MovieDetailPresenter extends BasePresenter {
 
     private static final String TAG = MovieDetailPresenter.class.getSimpleName();
-    private MovieInteractor movieInteractor ;
+    private MovieRepository movieRepository;
     private MovieDetailView mView ;
 
-    public MovieDetailPresenter(MovieInteractor movieInteractor, MovieDetailView mView) {
-        this.movieInteractor = movieInteractor;
+    public MovieDetailPresenter(MovieRepository movieRepository, MovieDetailView mView) {
+        this.movieRepository = movieRepository;
         this.mView = mView;
     }
 
     public void getMovieTrailersAndReviews(int movieId) {
 
-        compositeDisposable.add(Observable.zip(movieInteractor.fetchMovieTrailers(movieId), movieInteractor.fetchMovieReviews(movieId, 1),
+        compositeDisposable.add(Observable.zip(movieRepository.fetchMovieTrailers(movieId), movieRepository.fetchMovieReviews(movieId, 1),
                 (trailers, reviews) -> new Pair<>(trailers, reviews))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -41,7 +41,7 @@ public class MovieDetailPresenter extends BasePresenter {
     }
 
     public void saveMovieToFavorite(Movie movie) {
-        compositeDisposable.add(movieInteractor.saveMovie(movie)
+        compositeDisposable.add(movieRepository.saveMovie(movie)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> mView.saveToFavorited(),
@@ -49,7 +49,7 @@ public class MovieDetailPresenter extends BasePresenter {
     }
 
     public void isMovieFavorited(Movie movie) {
-        compositeDisposable.add(movieInteractor.getMovie(movie)
+        compositeDisposable.add(movieRepository.getMovie(movie)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> mView.isMovieFavorited(), error -> {
@@ -58,7 +58,7 @@ public class MovieDetailPresenter extends BasePresenter {
     }
 
     public void deleteFavorite(Movie movie) {
-        compositeDisposable.add(movieInteractor.deleteMovie(movie)
+        compositeDisposable.add(movieRepository.deleteMovie(movie)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
